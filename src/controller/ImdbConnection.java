@@ -29,7 +29,6 @@ public class ImdbConnection {
 			System.out.println("GET request not worked");
 		}
 		return null; 
-
 	}
 
 }

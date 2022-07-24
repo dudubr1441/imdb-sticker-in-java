@@ -14,15 +14,16 @@ import com.google.gson.Gson;
 
 public class ImdbController {
 
-    static ImageStickes imageStickes = new ImageStickes();
+    private ImageStickes imageStickes = new ImageStickes();
 
     private String formatLinkImageMovie(String nameImage){
-        String nameFormat = nameImage;
-        if(nameImage.contains("@")){
-        String namedelete = nameImage.substring(nameImage.lastIndexOf("@"), nameImage.length());
+        String nameFormat = null;
+        String namedelete;
+        if(nameImage.indexOf("@")!=-1){
+        namedelete = nameImage.substring(nameImage.lastIndexOf("@"), nameImage.length());
         nameFormat = nameImage.replace(namedelete,"@.jpg");
         }else{
-        String namedelete = nameImage.substring(nameImage.lastIndexOf("._V"), nameImage.length());
+        namedelete = nameImage.substring(nameImage.lastIndexOf("._V"), nameImage.length());
         nameFormat = nameImage.replace(namedelete,".jpg");
         }
         return nameFormat;
@@ -37,10 +38,10 @@ public class ImdbController {
         JSONObject jsObject = imdbconnection.JsonIMDB("top250movies",password);
         JSONArray jArray = jsObject.getJSONArray("items");
         //convert json in entity
-        jArray.forEach(movie->{listMovie.add((gson.fromJson(movie.toString(),MovieIMDb.class)));});
-        listMovie.forEach(movie->{
-            movie.setImage(formatLinkImageMovie(movie.getImage()));
-            System.out.println(movie.getImage());
+        jArray.forEach(movie->{
+        MovieIMDb movieIMDB = gson.fromJson(movie.toString(),MovieIMDb.class);     
+        movieIMDB.setImage(formatLinkImageMovie(movieIMDB.getImage()));
+        listMovie.add(movieIMDB);
         });
         //transform id image 
         } catch (IOException e) {
@@ -56,7 +57,7 @@ public class ImdbController {
              try { 
                  //directory path
                  imageNew = imageStickes.gifWhatsapp(movie);
-                 String path = "D:/programação/figurinhas java IMDB/originals images/"+movie.getTitle().replaceAll("[:\\\\/*\"?|<>']", "-")+".gif";
+                 String path = "Stickers exit/"+movie.getTitle().replaceAll("[:\\\\/*\"?|<>']", "-")+".gif";
                  System.out.println(movie.getRank());
                  System.out.println(movie.getTitle().replaceAll("[:\\\\/*\"?|<>']", "-"));
                  System.out.println(movie.getImage());
