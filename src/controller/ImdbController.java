@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.google.gson.Gson;
+import com.mycompany.imdb.sticker.in.java.entity.MovieIMDb;
 
 
 public class ImdbController {
 
-    private ImageStickes imageStickes = new ImageStickes();
+    private final ImageStickes imageStickes = new ImageStickes();
 
     private String formatLinkImageMovie(String nameImage){
         String nameFormat = null;
@@ -38,11 +39,11 @@ public class ImdbController {
         JSONObject jsObject = imdbconnection.JsonIMDB("top250movies",password);
         JSONArray jArray = jsObject.getJSONArray("items");
         //convert json in entity
-        jArray.forEach(movie->{
-        MovieIMDb movieIMDB = gson.fromJson(movie.toString(),MovieIMDb.class);     
-        movieIMDB.setImage(formatLinkImageMovie(movieIMDB.getImage()));
-        listMovie.add(movieIMDB);
-        });
+        for(MovieIMDb movie: listMovie){
+            MovieIMDb movieIMDB = gson.fromJson(movie.toString(),MovieIMDb.class);     
+            movieIMDB.setImage(formatLinkImageMovie(movieIMDB.getImage()));
+            listMovie.add(movieIMDB);
+        }
         //transform id image 
         } catch (IOException e) {
             System.err.println("error: "+e);
@@ -52,8 +53,8 @@ public class ImdbController {
     
     public void SaveAllTopMovies(String passwordIMDb) throws IOException{
         ArrayList<MovieIMDb> listMovies = listTopMovies(passwordIMDb);
-        listMovies.forEach(movie -> {
-             BufferedImage imageNew;
+        for(MovieIMDb movie: listMovie){
+            BufferedImage imageNew;
              try { 
                  //directory path
                  imageNew = imageStickes.gifWhatsapp(movie);
@@ -69,7 +70,6 @@ public class ImdbController {
              } catch (IOException e) {
                  System.err.println("error save Movies: "+e);
              }
-        });
- 
+        }
      }
 }
